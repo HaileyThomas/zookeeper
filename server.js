@@ -7,6 +7,11 @@ const PORT = process.env.PORT || 3001;
 // instantiate server
 const app = express();
 
+// parse incoming string or array data
+app.use(express.urlencoded({ extended: true }));
+// parse incoming JSON data
+app.use(express.json());
+
 // function will take in req.query as an argument and filter through the animals accordingly, returning the new filtered array
 function filterByQuery(query, animalsArray) {
     let personalityTraitsArray = [];
