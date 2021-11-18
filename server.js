@@ -1,3 +1,6 @@
+const fs = require('fs');
+// provides utilities for working with file and directory paths
+const path = require('path');
 // use express npm package
 const express = require('express');
 // get data from animals
@@ -52,6 +55,18 @@ function findById(id, animalsArray) {
     return result;
 }
 
+// accepts the POST route's req.body value and the array we want to add the data to
+function createNewAnimal(body, animalsArray) {
+    const animal = body;
+    animalsArray.push(animal);
+    fs.writeFileSync(
+        path.join(__dirname, './data/animals.json'),
+        JSON.stringify({ animals: animalsArray }, null, 2)
+    );
+    // return finished code to post route for response
+    return animal;
+}
+
 // add the route ('string that describes the route the client will have to fetch from', (callback function that will execute every time that route is accessed with a GET request))
 app.get('/api/animals', (req, res) => {
     let results = animals;
@@ -76,12 +91,38 @@ app.get('/api/animals/:id', (req, res) => {
 
 // define a route that listens for POST requests
 app.post('/api/animals', (req, res) => {
-    // req.body is where our incoming content will be
-    console.log(req.body);
-    res.json(req.body);
+    // set id based on what the next index of the array will be
+    req.body.id = animals.length.toString();
+
+    // if any data in req.body is incorrect, send 400 error back
+    if (!validateAnimal(req.body)) {
+        res.status(400).send('The animal is not properly formatted.');
+    } else {
+        // add animal to json file and animals array in this function
+        const animal = createNewAnimal(req.body, animals);
+
+        res.json(animal);
+    }
 });
 
 // make server listen for connections on the specified host and port
 app.listen(PORT, () => {
     console.log(`API server now on port ${PORT}!`);
 });
+
+// validate data
+function validateAnimal(animal) {
+    if (!animal.name || typeof animal.name !== 'string') {
+        return false;
+    }
+    if (!animal.species || typeof animal.species !== 'string') {
+        return false;
+    }
+    if (!animal.diet || typeof animal.diet !== 'string') {
+        return false;
+    }
+    if (!animal.personalityTraits || !Array.isArray(animal.personalityTraits)) {
+        return false;
+    }
+    return true;
+}
