@@ -14,6 +14,8 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 // parse incoming JSON data
 app.use(express.json());
+// instructs server to make files in public readily available and not gate it behind a server endpoint
+app.use(express.static('public'));
 
 // function will take in req.query as an argument and filter through the animals accordingly, returning the new filtered array
 function filterByQuery(query, animalsArray) {
@@ -87,6 +89,11 @@ app.get('/api/animals/:id', (req, res) => {
     } else {
         res.send(404);
     }
+});
+
+// '/' points to the root route on the server and is used to create a new homepage for a server
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/index.html'));
 });
 
 // define a route that listens for POST requests
