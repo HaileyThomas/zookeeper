@@ -1,6 +1,6 @@
+const router = require('express').Router();
 const { filterByQuery, findById, createNewAnimal, validateAnimal } = require('../../lib/animals');
 const { animals } = require('../../data/animals');
-const router = require('express').Router();
 
 // add the route ('string that describes the route the client will have to fetch from', (callback function that will execute every time that route is accessed with a GET request))
 router.get('/animals', (req, res) => {
