@@ -96,6 +96,21 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, './public/index.html'));
 });
 
+// adds route to animals.html
+app.get('/animals', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/animals.html'));
+});
+
+// adds route to zookeepers.html
+app.get('/zookeepers', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/zookeepers.html'));
+});
+
+// adds a wildcard route, any route that wasn't perviously defined will fall under this request and receive the homepage as the response
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/index.html'));
+});
+
 // define a route that listens for POST requests
 app.post('/api/animals', (req, res) => {
     // set id based on what the next index of the array will be
